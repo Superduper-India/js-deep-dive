@@ -174,13 +174,18 @@ function example8() {
 };
 
 test("run", () => {
+  //13.1
   // expect(example()).toBe();
   // expect(example2()).toBe();
   // expect(example3()).toBe();
   // expect(example4()).toBe();
+  //13.2
   // expect(example5()).toBe();
+  //13.3
   // expect(example6()).toBe();
+  //13.4
   // expect(example7()).toBe();
-  expect(example8()).toBe();
+  //13.5
+  // expect(example8()).toBe();
 });
 
