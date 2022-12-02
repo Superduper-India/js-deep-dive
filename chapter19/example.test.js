@@ -294,6 +294,36 @@ function example7() {
   console.log(`india.foo: ${india.foo}`);
 }
 
+// 19.8 오버라이딩과 프로퍼티 섀도잉
+// overriding : 상위 클래스가 가지고 있는 메서드를 하위 클래스가 재정의해서 사용
+function example8() {
+  // 생성자 함수
+  function Person(name) {
+    this.name = name;
+  }
+
+  // 프로토타입 메서드
+  Person.prototype.sayHello = function () {
+    console.log(`Hi! My name is ${this.name}`);
+  };
+
+  const me = new Person('Lee');
+
+  // 인스턴스 메서드
+  // 아래와 같이 sayHello메서드를 인스턴스가 프로토타입을 오버라이딩했다.
+  // 그러므로 프로토타입 메서드는 가려진다.
+  // 이처럼 상속관계에 의해 프로퍼티가 가려지는 현상을 프로퍼티 섀도잉이라고 한다.
+  me.sayHello = function () {
+    console.log(`Oh! What is my name? is it ${this.name}?`);
+  };
+
+  // 인스턴스 메서드가 호출된다. 프로토타입 메서드는 인스턴스 메서드에 의해 가려진다.
+  me.sayHello(); // Oh! What is my name? is it Lee?
+
+  // 참고로 프로토타입의 프로퍼티를 삭제하려면 직접 접근해야한다.
+  // 즉, get/apply는 되지만 set은 안된다.
+}
+
 test("run", () => {
   // expect(example()).toBe();
   // expect(example2()).toBe();
@@ -301,5 +331,6 @@ test("run", () => {
   // expect(example4()).toBe();
   // expect(example5()).toBe();
   // expect(example6()).toBe();
-  expect(example7()).toBe();
+  // expect(example7()).toBe();
+  expect(example8()).toBe();
 });
