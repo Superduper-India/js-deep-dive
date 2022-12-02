@@ -498,6 +498,47 @@ function example11() {
   console.log(Object.getPrototypeOf(obj3) === myProto); // true
 }
 
+// 19.12 정적 프로퍼티/메서드
+function example12() {
+  // Person생성자함수는 객체다. 즉, 자신의 프로퍼티/메서드(정적 프로퍼티/메서드)를 소유할 수 있다.
+  // 정적 프로퍼티 메서드는 생성자 함수로 인스턴스를 생성하지 않아도 참조/호출할 수 있는 프로퍼티/메서드를 말한다.
+  function Person(name) {
+    this.name = name;
+  }
+
+  Person.staticProp = '이건 정적 프로퍼티다!';
+  console.log(Person.staticProp);
+
+  Person.staticMathod = function () {
+    console.log('이건 정적 메서드다!');
+  };
+  Person.staticMathod();
+
+  // 그리고 정적 프로퍼티/메서드는 생성자함수가 생성한 인스턴스로 참조, 호출할 수 없다.
+  // 왜냐하면 인스턴스는 자신이 속한 프로토타입 체인의 객체의 프로퍼티/메서드만 참조할 수 있는데,
+  // 정적 프로퍼티/메서드는 프로토타입 체인에 속하지 않는다.
+
+  // 아래와 같이 프로토타입 메서드내에서 this(즉, 인스턴스)를 참조하지 않는다면 정적 메서드로 변경해도 동작한다.
+  Person.prototype.sayHello = function () {
+    console.log('프로토타입 메서드는 인스턴스를 생성해야 호출할 수 있다!')
+  };
+
+  // 프로토타입 메서드는 호출하기 위해 인스턴스를 생성해야한다.
+  const me = new Person('sunyoung');
+
+  // me.sayHello();
+
+  // 반면, 정적 메서드는 인스턴스를 생성하지 않아도 호출할 수 있다.
+  Person.sayBye = function () {
+    console.log('정적 메서드는 인스턴스를 생성하지 않아도 호출할 수 있다!')
+  };
+
+  Person.sayBye();
+
+  // 생성자함수가 생성한 인스턴스 me로 정적메서드를 호출하려하면 타입에러가 난다.
+  me.staticMathod(); // TypeError: me.staticMathod is not a function
+}
+
 test("run", () => {
   // expect(example()).toBe();
   // expect(example2()).toBe();
@@ -509,5 +550,6 @@ test("run", () => {
   // expect(example8()).toBe();
   // expect(example9()).toBe();
   // expect(example10()).toBe();
-  expect(example11()).toBe();
+  // expect(example11()).toBe();
+  expect(example12()).toBe();
 });
