@@ -539,6 +539,31 @@ function example12() {
   me.staticMathod(); // TypeError: me.staticMathod is not a function
 }
 
+// 19.13 프로퍼티 존재 확인
+function example13() {
+  // in 연산자는 객체 내에 특정 프로퍼티가 존재하는지여부를 확인한다.
+  const person = {
+    name: 'Sunyoung',
+    address: 'Seoul',
+  }
+
+  // person객체에 name프로퍼티가 존재하는지 확인
+  console.log(`'name' in person: ${'name' in person}`);
+  console.log(`'age' in person: ${'age' in person}`);
+
+  // Reflect.has메서드도 동일하게 동작한다.
+  console.log(`Reflect.has(person, 'name'): ${Reflect.has(person, 'name')}`);
+  console.log(`Reflect.has(person, 'age'): ${Reflect.has(person, 'age')}`);
+
+  // 하지만 객체내 프로퍼티 뿐만 아니라 상속받는 모든 프로토타입의 프로퍼티를 확인하므로 주의가 필요하다.
+  // 아래의 경우도 toString은 Object.prototype의 메서드므로 존재한다고 나온다.
+  console.log(`'toString' in person: ${'toString' in person}`);
+
+  // Object.prototype.hasOwnProperty
+  // 그러므로 위 메서드를 인수가 객체의 고유한 프로퍼티일 경우에만 true를 반환한다.
+  console.log(`person.hasOwnProperty('toString'): ${person.hasOwnProperty('toString')}`);
+}
+
 test("run", () => {
   // expect(example()).toBe();
   // expect(example2()).toBe();
@@ -551,5 +576,6 @@ test("run", () => {
   // expect(example9()).toBe();
   // expect(example10()).toBe();
   // expect(example11()).toBe();
-  expect(example12()).toBe();
+  // expect(example12()).toBe();
+  expect(example13()).toBe();
 });
