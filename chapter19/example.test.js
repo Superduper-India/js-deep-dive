@@ -434,6 +434,70 @@ function example10() {
   console.log(`me instanceof Person: ${me instanceof Object}`);
 }
 
+// 19.11 직접 상속
+function example11() {
+  // 1. Object.create메서드는 명시적으로 프로토타입을 지정한다.
+  // 첫번째 매개변수엔 생성할 객체의 프로토타입으로 지정할 객체,
+  // 두번째(op) 매개변수엔 생성할 객체의 프로퍼티 키, 프로퍼티 디스크립터 객체의 객체를 전달한다.
+
+  // obj의 프로토타입으로 null을 지정. 즉, 프로토타입 체인의 종점에 위치
+  // 즉 obj => null
+  let obj = Object.create(null);
+  // console.log(obj); // [Object: null prototype] {}
+  console.log(`Object.getPrototypeOf(obj) === null: ${Object.getPrototypeOf(obj) === null}`);
+  // obj는 프로토타입 체인의 최상단에 존재하기 때문에 Object.prototype을 상속받지 못한다.
+  // console.log(obj.toString()); //TypeError: obj.toString is not a function
+
+  // obj의 프로토타입으로 Object.prototype을 지정
+  // 즉 obj => Object.prototype => null이 된다.
+  // obj = {};
+  obj = Object.create(Object.prototype);
+  console.log(obj);
+
+  // 즉 obj => Object.prototype => null이 된다.
+  // obj = {x:1};
+  obj = Object.create(Object.prototype, {
+    x: { value: 1, writable: true, enumerable: true }
+  });
+  console.log(obj.x);
+
+  // 이 메서드의 장점은 다음과 같다.
+  // new연산자 없이 객체를 생성할 수 있다.
+  // 프로토타입을 지정하면서 객체를 생성할 수 있다.
+  // 객체 리터럴에 의해 생성된 객체도 상속받을 수 있다.
+
+  // 단, Object.prototype의 다양한 빌트인 메서드를 모든 객체를 상속받아 사용할 수 있지만,
+  // Object.create로 프로토타입 체인의 종점에 위치하는 객체를 생성하는 경우,
+  // 해당객체는 Object.prototype의 다양한 빌트인 메서드를 사용할 수 없다.
+  // 따라서 에러발생의 위험을 없애기 위해 Object.prototype의 빌트인 메서드는 간접적으로 호출하는게 좋다.
+  const obj2 = Object.create(null);
+  obj2.a = 1;
+
+  console.log(obj2.hasOwnProperty('a')); // TypeError: obj2.hasOwnProperty is not a function
+
+  // Object.prototype의 빌트인 메서드는 객체로 직접 호출하지 않는다.
+  console.log(Object.prototype.hasOwnProperty.call(obj2, 'a')); // true
+
+  // 2. 객체 리터럴 내부에서 __proto__에 의한 직접 상속
+  const myProto = { x: 10 };
+
+  // 객체 리터럴에 의해 객체를 생성하면서 프로토타입을 지정하여 직접 상속받을 수 있다.
+  const obj3 = {
+    y: 20,
+    // 객체를 직접 상속받는다.
+    // obj3 → myProto → Object.prototype → null
+    __proto__: myProto
+  };
+  /* 위 코드는 아래와 동일하다. 두번째 인자에서 번거롭게 프로퍼티를 정의할 필요가 없어진다.
+  const obj3 = Object.create(myProto, {
+    y: { value: 20, writable: true, enumerable: true, configurable: true }
+  });
+  */
+
+  console.log(obj3.x, obj3.y); // 10 20
+  console.log(Object.getPrototypeOf(obj3) === myProto); // true
+}
+
 test("run", () => {
   // expect(example()).toBe();
   // expect(example2()).toBe();
@@ -444,5 +508,6 @@ test("run", () => {
   // expect(example7()).toBe();
   // expect(example8()).toBe();
   // expect(example9()).toBe();
-  expect(example10()).toBe();
+  // expect(example10()).toBe();
+  expect(example11()).toBe();
 });
