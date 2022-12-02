@@ -198,9 +198,37 @@ function example4() {
   // 그러므로 둘을 동일시해도 큰 무리는 없다.
 }
 
+// 19.5 프로토타입의 생성 시점
+function example5() {
+  // 위에서 살펴본대로, 어찌됐건 모든 객체는 생성자 함수와 연결돼 있다.
+  // 생성자 함수는 크게 두 분류이다.
+  // 1. 사용자 정의 생성자 함수
+  // 2. js가 제공하는 빌트인 생성자 함수
+
+  // 함수 정의(constructor)가 평가되어 함수 객체를 생성하는 시점에 프로토타입도 더불어 생성된다.
+  console.log(`Sunyoung.prototype: ${Sunyoung.prototype}`); // {constructor: ƒ}
+
+  // 생성자 함수
+  function Sunyoung(name) {
+    this.name = name;
+  }
+
+  // 화살표 함수는 non-constructor다.
+  const Park = name => {
+    this.name = name;
+  };
+
+  // non-constructor는 프로토타입이 생성되지 않는다.
+  console.log(`Park.prototype: ${Park.prototype}`); // undefined
+
+  // 빌트인 생성자 함수+프로토타입 쌍은 전역 객체가 생성되는 시점에 생성된다.
+  // 그러고 이후 프로토타입은 생성자 함수나 리터럴 표기법으로 생성한 new객체의 [[prototype]]내부 슬롯에 할당된다.
+}
+
 test("run", () => {
   // expect(example()).toBe();
   // expect(example2()).toBe();
   // expect(example3()).toBe();
-  expect(example4()).toBe();
+  // expect(example4()).toBe();
+  expect(example5()).toBe();
 });
