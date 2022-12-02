@@ -324,6 +324,84 @@ function example8() {
   // 즉, get/apply는 되지만 set은 안된다.
 }
 
+// 19.9 프로토타입의 교체
+function example9() {
+  // 프로토타입은 생성자 함수 또는 인스턴스에 의해 임의의 다른 객체로 변경될 수 있다.
+  // 이런 특징을 활용해서 객체 간의 상속 관계를 동적으로 변경할 수 있다.
+
+  // 1. 생성자 함수에 의한 프로토타입의 교체
+  // : 함수의 prototype프로퍼티에 접근해 미래에 생성할 인스턴스의 프로토타입을 교체하는 것이다.
+
+  // Q. 아래 함수의 생김새를 이해 못하겠다..
+  // 클래스와 비슷한 쓰임새 (클래스-현업에서 가끔 사용)
+  const Sunyoung = (function () {
+    // 생성자 함수 선영
+    function Sunyoung(name) {
+      this.name = name;
+    }
+
+    // 생성자 함수의 prototype프로퍼티를 통해 프로토타입을 교체
+    // Sunyoung.prototype에 객체 리터럴을 할당함
+    // 즉, Sunyoung생성자 함수가 앞으로 생성할 객체의 프로토타입을 객체 리터럴로 교체한 것
+    // Q. 여기서 객체 리터럴은 {}안에 들어간 값을 의미?
+    Sunyoung.prototype = {
+      // *** 단, constructor 프로퍼티와 생성자 함수 간의 연결을 설정
+      constructor: Sunyoung,
+      sayHello() {
+        console.log(`Hi, my name is ${this.name}`);
+      }
+    }
+
+    return Sunyoung;
+  }());
+
+  const sunyoung = new Sunyoung('sunyoung');
+  sunyoung.sayHello();
+
+  // 프로토타입을 교체하면 constructor프로퍼티와 생성자 함수 간의 연결이 파괴된다.
+  console.log(`sunyoung.constructor === Sunyoung: ${sunyoung.constructor === Sunyoung}`);
+  // 프로토타입 체인을 따라 Object.prototype의 constructor프로퍼티가 검색된다.
+  console.log(`sunyoung.constructor === Object: ${sunyoung.constructor === Object}`);
+  // *** 그렇다면 constructor프로퍼티와 생성자 함수 간의 연결을 되살려보자.
+
+
+  // 2. 인스턴스에 의한 프로토타입의 교체
+  // : 인스턴스의 __proto__접근자 프로퍼티(또는 Object.setPrototypeOf 메서드)를 통해
+  //   이미 생성된 객체의 프로토타입을 교체하는 것이다.
+  // 생성자 함수 생성
+  function India(name) {
+    this.name = name;
+  }
+
+  // 인스턴스 생성
+  const india = new India('india');
+
+  // 프로토타입으로 교체할 객체
+  const parent = {
+    // *** constructor프로퍼티와 생성자 함수간의 연결을 설정
+    constructor: India,
+    sayHello() {
+      console.log(`hi, my name is ${this.name}`);
+    }
+  };
+
+  // *** 생성자 함수의 prototype프로퍼티와 parent객체와의 연결을 설정
+  India.prototype = parent;
+
+  // india인스턴스 객체의 프로토타입을 parent로 바꾼다.
+  Object.setPrototypeOf(india, parent);
+  // 위 코드는 아래의 코드와 동일하게 동작한다.
+  // 즉 india인스턴스의 __proto__접근자 프로퍼티를 통해 프로토타입에 접근해 parent객체로 교체한다.
+  // india.__proto__ = parent;
+
+  // 프로토타입을 교체하면 constructor프로퍼티와 생성자 함수 간의 연결이 파괴된다.
+  console.log(`india.constructor === India: ${india.constructor === India}`);
+  // 프로토타입 체인을 따라 Object.prototype의 constructor프로퍼티가 검색된다.
+  console.log(`india.constructor === Object: ${india.constructor === Object}`);
+  // *** 그렇다면 parent에 constructor프로퍼티를 추가하고, 
+  //     India함수의 prototype프로퍼티를 재설정하여, 파괴된 연결을 되살려보자.
+}
+
 test("run", () => {
   // expect(example()).toBe();
   // expect(example2()).toBe();
@@ -332,5 +410,6 @@ test("run", () => {
   // expect(example5()).toBe();
   // expect(example6()).toBe();
   // expect(example7()).toBe();
-  expect(example8()).toBe();
+  // expect(example8()).toBe();
+  expect(example9()).toBe();
 });
