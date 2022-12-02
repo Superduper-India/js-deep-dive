@@ -261,11 +261,45 @@ function example6() {
   you.sayHello(); // Hi! My name is Kim
 }
 
+// 19.7 프로토타입 체인
+function example7() {
+  function Person(name) {
+    this.name = name;
+    console.log(`Hi, my KR name is ${name}`); // 호출2
+  }
+
+  Person.prototype.greeting = function () {
+    console.log(`Hi, my ER name is ${this.name}!`) // 호출
+  }
+
+  const india = new Person('india'); // 호출2
+  india.greeting(); // 호출
+
+  // Person생성자함수에 의해 생성된 india인스턴스(객체)는 Object.prototype의 메서드인 hasOwnProperty를 호출 할 수 있다.
+  // 즉, Person.prototype뿐만 아니라 Object.prototype도 상속받았다는 뜻이다.
+  // 즉, 프로토타입의 프로토타입은 언제나 Object.prototype이다.
+
+  // 프로토타입 체인에 의해서 해당 객체에 접근하려는 메서드(아래의 경우는 hasOwnProperty)가 없으면
+  // [[Prototype]]내부 슬롯의 참조를 따라 부모 프로토타입의 프로퍼티를 순차적으로 검색한다.
+
+  // 참고로 스코프 체인과 프로토타입 체인은 서로 연관이 없는게 아니라, 연관되어 식별자와 프로퍼티를 검색하는데 사용된다.
+  // 아래 코드의 경우는 스코프체인에서 india식별자를 검색한 뒤, india객체의 프로토타입 체인에서 hasOwnProperty메서드를 검색한다.
+  console.log(`india.hasOwnProperty('name'): ${india.hasOwnProperty('name')}`);
+
+  // 프로토타입 체인의 최상위에 위치하는 객체는 언제나 Object.prototype이다.
+  // 따라서 모든 객체는 Object.prototype을 상속받는다.
+  // 그러므로 Object.prototype을 프로토타입 체인의 종점이라고 한다.
+  // Object.prototype의 프로토타입, 즉 [[Prototype]]내부 슬롯의 값은 null이다.
+  // 체인의 종점까지 프로퍼티를 못찾으면 undefined를 반환한다.
+  console.log(`india.foo: ${india.foo}`);
+}
+
 test("run", () => {
   // expect(example()).toBe();
   // expect(example2()).toBe();
   // expect(example3()).toBe();
   // expect(example4()).toBe();
   // expect(example5()).toBe();
-  expect(example6()).toBe();
+  // expect(example6()).toBe();
+  expect(example7()).toBe();
 });
