@@ -169,8 +169,38 @@ function example3() {
   );
 }
 
+// 19.4 리터럴 표기법에 의해 생성된 객체의 생성자 함수와 프로토타입
+function example4() {
+  // 리터럴(데이터, 즉 값 그 자체) 표기법에 의해 생성된 객체의 경우
+  // 프로토타입의 constructor 프로퍼티가 가리키는 생성자 함수가
+  // 반드시 객체를 생성한 생성자 함수라고 단정할 수 없다.
+
+  // obj는 Object생성자 함수가 아니라, 객체 리터럴에 의해 생성됐다
+  const obj = {};
+
+  // 하지만 obj객체는 Object생성자 함수와 constructor프로퍼티로 연결돼 있다
+  console.log(
+    `obj.constructor === Object: ${obj.constructor === Object}`
+  );
+
+  // 마찬가지로 foo는 Function생성자 함수가 아니라, 함수 선언문으로 생성했다
+  function foo() { }
+
+  // 하지만 constructor프로퍼티를 통해 확인해보면 함수 foo의 생성자 함수는 Funtion생성자 함수이다
+  console.log(
+    `foo.constructor === Function: ${foo.constructor === Function}`
+  );
+
+  // 리터럴 표기법에 의해 생성된 객체도 상속을 위해 프로토타입이 필요하고,
+  // 가상적인 생성자 함수를 갖는다. 즉, 프로토타입과 생성자 함수는 언제나 쌍으로 존재한다.
+
+  // 하지만 본질적으로 [생성자 함수로 만든 객체]와 [리터럴 표기법으로 만든 객체]는 큰 차이가 없다.
+  // 그러므로 둘을 동일시해도 큰 무리는 없다.
+}
+
 test("run", () => {
   // expect(example()).toBe();
   // expect(example2()).toBe();
-  expect(example3()).toBe();
+  // expect(example3()).toBe();
+  expect(example4()).toBe();
 });
