@@ -225,10 +225,47 @@ function example5() {
   // 그러고 이후 프로토타입은 생성자 함수나 리터럴 표기법으로 생성한 new객체의 [[prototype]]내부 슬롯에 할당된다.
 }
 
+// 19.6 객체 생성 방식과 프로토타입의 결정
+function example6() {
+  // 객체는 공통적으로 OrdinaryObjectCreate추상 연산에 의해 생성된다. 프로세스는 아래와 같다.
+  // 1. 필수인수로 자신이 생성할 객체의 프로토타입을 전달받는다.
+  // 2. 빈 객체를 생성한다.
+  // 3. 객체에 추가할 프로퍼티 목록이 옵션인수로 전달받은 경우, 객체에 추가한다.
+  // 4. 그리고 프로토타입을 객체의 [[Prototype]]내부 슬롯에 할당한다.
+  // 5. 생성한 객체를 반환한다.
+
+  // 즉 프로토타입은 필수인수에 의해 결정되며, 객체가 생성되는 시점, 객체 생성 방식에 의해 결정된다.
+  const obj = { x: 1 };
+
+  // 객체 리터럴에 의해 생성된 obj 객체는 Object.prototype을 상속받는다.
+  console.log(`obj.constructor === Object: ${obj.constructor === Object}`); // true
+  console.log(`obj.hasOwnProperty('x'): ${obj.hasOwnProperty('x')}`);    // true
+  console.log(`obj.hasOwnProperty('toString'): ${obj.hasOwnProperty('toString')}`);
+
+  // 사용자 정의 생성함수의 프로토타입에 프로퍼티를 추가해보자.
+  function Sunyoung(name) {
+    this.name = name;
+  }
+
+  // 프로토타입 메서드
+  Sunyoung.prototype.sayHello = function () {
+    console.log(`Hi! My name is ${this.name}`);
+  };
+
+  // 인스턴스 생성
+  // 아래 생성된 모든 객체는 프로토타입에 추가된 sayHello메서드를 상속받아 자신의 메서드처럼 쓸 수 있다.
+  const me = new Sunyoung('Lee');
+  const you = new Sunyoung('Kim');
+
+  me.sayHello();  // Hi! My name is Lee
+  you.sayHello(); // Hi! My name is Kim
+}
+
 test("run", () => {
   // expect(example()).toBe();
   // expect(example2()).toBe();
   // expect(example3()).toBe();
   // expect(example4()).toBe();
-  expect(example5()).toBe();
+  // expect(example5()).toBe();
+  expect(example6()).toBe();
 });
