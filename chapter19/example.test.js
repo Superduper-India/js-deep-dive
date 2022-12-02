@@ -564,6 +564,35 @@ function example13() {
   console.log(`person.hasOwnProperty('toString'): ${person.hasOwnProperty('toString')}`);
 }
 
+// 19.14 프로퍼티 열거
+function example14() {
+  // for...in문은 객체의 프로토타입 체인상에 존재하는 모든 프로토타입 프로퍼티 중에서 
+  // 프로퍼티의 속성값(즉, [[Enumerable]]의 값이 true인 프로퍼티만 순회해서 열거한다.
+  const person = {
+    name: 'sunyoung',
+    address: 'seoul',
+    __proto__: { age: 20 } // *** 프로퍼티의 속성값(즉, [[Enumerable]]의 값)이 true
+  };
+
+  // 객체의 모든 프로퍼티를 순회, 열거하려면 for...in문을 사용한다.
+  // for...in문도 in연산자처럼 toString같이 상속받은 프로토타입의 프로퍼티까지 열거한다.
+  // 하지만 아래 예제에선 찍히지 않는다. 왜일까?
+
+  // 왜냐면 toString이 열거할 수 없도록 정의된 프로퍼티이기 때문이다.
+  // 즉, 프로퍼티 속성값 [[Enumerable]]의 값이 false이기 때문이다.
+  for (const key in person) {
+    console.log(`${key}: ${person[key]}`)
+  }
+
+  // *** Object.prototype.hasOwnProperty 메서드를 사용해야한다.
+  console.log(`person.hasOwnProperty('toString'): ${person.hasOwnProperty('toString')}`);
+
+  // *** 혹은 Object.keys/values/entries 메서드를 사용해야한다.
+  console.log(`Object.keys(person): ${Object.keys(person)}`);
+  console.log(`Object.values(person): ${Object.values(person)}`);
+  console.log(`Object.entries(person): ${Object.entries(person)}`);
+}
+
 test("run", () => {
   // expect(example()).toBe();
   // expect(example2()).toBe();
@@ -577,5 +606,6 @@ test("run", () => {
   // expect(example10()).toBe();
   // expect(example11()).toBe();
   // expect(example12()).toBe();
-  expect(example13()).toBe();
+  // expect(example13()).toBe();
+  expect(example14()).toBe();
 });
