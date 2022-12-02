@@ -87,7 +87,90 @@ function example2() {
   console.log(solution1.getArea === solution2.getArea); // true
 }
 
+// 19.3 프로토타입 객체
+function example3() {
+  // 모든 객체는 [[prototype]] 내부 슬롯(즉, 프로토타입)을 가지며, 
+  // 이 [프로토타입]은 특정 객체의 [상위(부모)객체]의 역할을 한다.
+  // 즉, 공유 프로퍼티(메서드 포함)을 제공한다.
+  // 모든 객체는 __proto__접근자 프로퍼티를 통해
+  // 자신의 [프로토타입]=[상위(부모)객체]에 접근할 수 있다.
+
+  // __proto__접근자 프로퍼티
+  // 위 프로퍼티는 어떤 객체가 소유하는 프로퍼티가 아니라,
+  // Object.prototype의 프로퍼티다. 즉 모든 객체는 상속을 통해 __proto__를 사용할 수 있다.
+  const obj = {};
+  const objParent = { x: 1 };
+
+  // getter 함수인 get __proto__가 호출되어 obj 객체의 프로토타입을 취득
+  obj.__proto__;
+  // setter함수인 set __proto__가 호출되어 obj 객체의 프로토타입을 교체
+  obj.__proto__ = objParent;
+
+  console.log(`obj.x: ${obj.x}`); // 1
+
+  // __proto__ 접근자 프로퍼티를 통해 프로토타입에 접근하는 이유는
+  // 상호참조에 의해 프로토타입 체인이 생성되는 것을 방지하기 위해서다
+  // 다시 말해, 순환참조하는 프로토타입 체인이 만들어지면, 프로퍼티를 검색할 때 무한루프에 빠져버린다..!!
+  const parent = {};
+  const child = {};
+
+  // child의 프로토타입을 parent로 설정
+  child.__proto__ = parent;
+  // parent의 프로토타입을 child로 설정
+  // parent.__proto__ = child; // TypeError: Cyclic __proto__ value
+
+  // 그런데, 모든 객체가 __proto__를 참조할 수 있는건 아니기 때문에
+  // 프로토타입의 참조를 취득하거나 교체하고 싶을땐 .getPrototypeOf, .setPrototypeOf같은 메서드를 사용하자
+
+  // 함수표현식, 선언식 객체의 prototype프로퍼티 === 생성자 함수가 생성할 인스턴스의 프로토타입
+  // 따라서 생성자 함수로서 호출할 수 없는 함수인 화살표 함수와, es6 메서드 축약 표현은 prototype프로퍼티를 소유하지 않는다
+  // 함수 객체는 prototype 프로퍼티를 소유한다.
+  (function () { }).hasOwnProperty('prototype'); // -> true
+
+  // 일반 객체는 prototype 프로퍼티를 소유하지 않는다.
+  ({}).hasOwnProperty('prototype'); // -> false
+
+  // 화살표 함수는 non-constructor다.
+  const Person = name => {
+    this.name = name;
+  };
+
+  // non-constructor는 prototype 프로퍼티를 소유하지 않는다.
+  console.log(Person.hasOwnProperty('prototype')); // false
+
+  // non-constructor는 프로토타입을 생성하지 않는다.
+  console.log(Person.prototype); // undefined
+
+  // ES6의 메서드 축약 표현으로 정의한 메서드는 non-constructor다.
+  const foo = {
+    foo() { }
+  };
+
+  // non-constructor는 prototype 프로퍼티를 소유하지 않는다.
+  console.log(foo.foo.hasOwnProperty('prototype')); // false
+
+  // non-constructor는 프로토타입을 생성하지 않는다.
+  console.log(foo.foo.prototype); // undefined
+
+  function Sunyoung(name) {
+    this.name = name;
+  }
+
+  const me = new Sunyoung('Lee') // Person생성자 함수로 me인스턴스 생성
+
+  // Sunyoung.prototype과 me.__proto__는 결국 동일한 프로토타입을 가리킨다
+  console.log(
+    `Sunyoung.prototype === me.__proto__: ${Sunyoung.prototype === me.__proto__}`
+  );
+  // me객체의 생성자 함수는 Person이다
+  // 즉, me는 Sunyoung.prototype의 constructor프로퍼티에 의해 Sunyoung
+  console.log(
+    `me.constructor === Sunyoung: ${me.constructor === Sunyoung}`
+  );
+}
+
 test("run", () => {
   // expect(example()).toBe();
-  expect(example2()).toBe();
+  // expect(example2()).toBe();
+  expect(example3()).toBe();
 });
