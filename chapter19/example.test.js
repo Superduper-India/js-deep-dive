@@ -402,6 +402,38 @@ function example9() {
   //     India함수의 prototype프로퍼티를 재설정하여, 파괴된 연결을 되살려보자.
 }
 
+// 19.10 instanceof 연산자
+function example10() {
+  // 객체 instanceof 생성자 함수
+  // 왼쪽 객체의 프로토타입 체인상에 오른쪽 생성자 함수의 prototype에 바인딩된 객체가 존재하면 true,
+  // 그렇지 않으면 false를 리턴한다.
+
+  function Person(name) {
+    this.name = name;
+  }
+
+  const me = new Person('')
+
+  // ***프로토타입으로 교체할 객체
+  const parent = {
+    constructor: Person,
+  };
+  // *** me를 parent으로 프로토타입의 교체
+  Object.setPrototypeOf(me, parent);
+
+  // *** Person생성자 함수와 parent객체는 연결되어 있지 않다.
+  console.log(`Person.prototype === parent: ${Person.prototype === parent}`);
+
+  // *** parent객체를 Person생성자 함수의 prototype프로퍼티에 바인딩한다.
+  Person.prototype = parent;
+
+  // me인스턴스의 프로토타입 체인을 타고올라갔을때 Person프로토타입이 존재하면 true로 평가
+  // *** parent객체를 Person생성자 함수의 prototype프로퍼티에 바인딩해보자.
+  console.log(`me instanceof Person: ${me instanceof Person}`);
+  // Object프로토타입도 존재하므로 true로 평가
+  console.log(`me instanceof Person: ${me instanceof Object}`);
+}
+
 test("run", () => {
   // expect(example()).toBe();
   // expect(example2()).toBe();
@@ -411,5 +443,6 @@ test("run", () => {
   // expect(example6()).toBe();
   // expect(example7()).toBe();
   // expect(example8()).toBe();
-  expect(example9()).toBe();
+  // expect(example9()).toBe();
+  expect(example10()).toBe();
 });
